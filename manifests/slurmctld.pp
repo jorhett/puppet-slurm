@@ -20,9 +20,9 @@
 #
 class slurm::slurmctld inherits slurm
 {
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Redhat': { }
-    default:  { fail("Module ${module_name} is not supported on ${::operatingsystem}") }
+    default:  { fail("Module ${module_name} is not supported on ${facts['os']['name']}") }
   }
 
   $dir_ensure = $slurm::ensure ? {

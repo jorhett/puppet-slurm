@@ -181,9 +181,9 @@ inherits slurm
 {
   validate_legacy('String', 'validate_re', $ensure, ['^present', '^absent'])
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Redhat': { }
-    default:  { fail("Module ${module_name} is not supported on ${::operatingsystem}") }
+    default:  { fail("Module ${module_name} is not supported on ${facts['os']['name']}") }
   }
 
   include ::slurm::install
@@ -246,7 +246,7 @@ inherits slurm
     }
 
     # Eventually create the 'slurm'@'*' user with all rights
-    unique([ $storagehost, $::hostname, $::fqdn]).each |String $host| {
+    unique([ $storagehost, $facts['networking']['hostname'], $facts['networking']['fqdn']]).each |String $host| {
       mysql_user { "${storageuser}@${host}":
         password_hash => mysql_password($storagepass),
       }

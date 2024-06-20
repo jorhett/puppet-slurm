@@ -74,7 +74,7 @@ define slurm::pmix::build(
     default   => "build-pmix-${version}",
     }
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Redhat': {
       include ::epel
       include ::yum
@@ -98,7 +98,7 @@ define slurm::pmix::build(
       Yum::Group[$slurm::params::groupinstall] -> Exec[$buildname]
       Package['libevent-devel'] -> Package['python3-devel'] -> Exec[$buildname]
 
-      $rpmdir = "${dir}/RPMS/${::architecture}"
+      $rpmdir = "${dir}/RPMS/${facts['os']['architecture']}"
       $rpms = prefix(suffix($slurm::params::pmix_rpms, "-${version}*.rpm"), "${rpmdir}/")
       $extra_define_opts = join(suffix(prefix($defines, "--prefix \""), "\""), ' ')
 
@@ -119,7 +119,7 @@ define slurm::pmix::build(
       }
     }
     default: {
-      fail("Module ${module_name} is not supported on ${::operatingsystem}")
+      fail("Module ${module_name} is not supported on ${facts['os']['name']}")
     }
   }
 
