@@ -772,11 +772,11 @@ inherits slurm::params
 
   info ("Configuring SLURM (with ensure = ${ensure})")
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     #'Debian': { contain ::slurm::common::debian }
     'RedHat':  { contain ::slurm::common::redhat }
     default: {
-      fail("Module ${module_name} is not supported on ${::operatingsystem}")
+      fail("Module ${module_name} is not supported on ${facts['os']['name']}")
     }
   }
 }

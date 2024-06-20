@@ -110,7 +110,7 @@ define slurm::build(
     $define_pmix = ''
   }
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Redhat': {
       include ::epel
       include ::yum
@@ -123,7 +123,7 @@ define slurm::build(
       }
       Yum::Group[$slurm::params::groupinstall] -> Exec[$buildname]
 
-      $rpmdir = "${dir}/RPMS/${::architecture}"
+      $rpmdir = "${dir}/RPMS/${facts['os']['architecture']}"
       $rpms   = prefix(suffix(concat($slurm::params::common_rpms_basename, $slurm::params::slurmdbd_rpms_basename),
                               "-${version}*.rpm"), "${rpmdir}/")
       # the below command should typically produce the following RPMs
@@ -143,7 +143,7 @@ define slurm::build(
       }
     }
     default: {
-      fail("Module ${module_name} is not supported on ${::operatingsystem}")
+      fail("Module ${module_name} is not supported on ${facts['os']['name']}")
     }
   }
 

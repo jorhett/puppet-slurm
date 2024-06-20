@@ -148,7 +148,7 @@ inherits slurm::params
   }
   if !defined(Git::Config['user.email']) {
     git::config { 'user.email':
-      value => "${slurm::params::username}@${::fqdn}",
+      value => "${slurm::params::username}@${facts['networking']['fqdn']}",
       user  => $slurm::params::username,
     }
   }

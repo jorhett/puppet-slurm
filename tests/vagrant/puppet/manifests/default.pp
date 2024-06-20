@@ -14,7 +14,7 @@ node default {
   # Check that the hiera configuration is working...
   # if not the puppet provisioning will fail.
   $msg=lookup('msg')
-  notice("Role: ${::role}")
+  notice("Role: ${facts['role']}")
   #notice("Message: ${msg}")
 
   lookup('profiles', {merge => unique}).contain

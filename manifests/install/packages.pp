@@ -82,7 +82,7 @@ define slurm::install::packages(
   # notice("Package installation for slurmdbd  = ${slurmdbd}")
 
   # Let's build the [default] package list
-  if  $::osfamily == 'RedHat' {
+  if  $facts['os']['family'] == 'RedHat' {
     $common_rpms    = $slurm::params::common_rpms_basename
     $slurmdbd_rpms  = $slurm::params::slurmdbd_rpms_basename
     $slurmctld_rpms = $slurm::params::slurmctld_rpms_basename
@@ -141,12 +141,12 @@ define slurm::install::packages(
   # ... including the version numbers
   $pkgs = suffix($pkglist, "-${version}")
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Redhat': {
       include ::epel
       include ::yum
       $rpms   = suffix($pkgs, '*.rpm')
-      $cwddir = "${pkgdir}/RPMS/${::architecture}"
+      $cwddir = "${pkgdir}/RPMS/${facts['os']['architecture']}"
       # $cwddir = ($pkgdir == $slurm::params::builddir) ? {
       #   true    => "${pkgdir}/RPMS/${::architecture}",
       #   default => $pkgdir,
@@ -175,7 +175,7 @@ define slurm::install::packages(
       }
     }
     default: {
-      fail("Module ${module_name} is not supported on ${::operatingsystem}")
+      fail("Module ${module_name} is not supported on ${facts['os']['name']}")
     }
   }
 

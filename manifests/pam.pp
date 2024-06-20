@@ -55,7 +55,7 @@ inherits slurm::params
   # the application of this class will prevent the vagrant user to work as expected
   # Trick is to detect ::is_virtual facter + the presence of the /vagrant directory
   # See custom fact 'lib/facter/is_vagrant.rb'
-  $default_allowed_users = $::is_vagrant ? {
+  $default_allowed_users = $facts['is_vagrant'] ? {
     true    => [ 'root', 'vagrant'],
     default => [ 'root' ],
   }

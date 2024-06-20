@@ -61,7 +61,7 @@ class slurm::config {
           group   => $slurm::params::group,
           require => File[$pluginsdir],
         }
-        if ($::osfamily == 'RedHat') {
+        if ($facts['os']['family'] == 'RedHat') {
           File["${pluginsdir}/${plugin}.conf"] {
             seltype => 'etc_t',
           }

@@ -42,11 +42,11 @@ define slurm::pmix::install(
   # $name is provided at define invocation
   $version = $name
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Redhat': {
       include ::epel
       include ::yum
-      $rpmdir = "${builddir}/RPMS/${::architecture}"
+      $rpmdir = "${builddir}/RPMS/${facts['os']['architecture']}"
       $rpm = "pmix-${version}*.rpm"
       $rpmdevel = "pmix-devel-${version}*.rpm"
 
@@ -74,7 +74,7 @@ define slurm::pmix::install(
       }
     }
     default: {
-      fail("Module ${module_name} is not supported on ${::operatingsystem}")
+      fail("Module ${module_name} is not supported on ${facts['os']['name']}")
     }
   }
 

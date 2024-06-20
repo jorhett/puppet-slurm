@@ -23,8 +23,8 @@ define slurm::firewall(
   include ::slurm::params
   validate_legacy('String', 'validate_re', $ensure, ['^present', '^absent'])
 
-  if (($::osfamily != 'RedHat') or (versioncmp($facts['os']['release']['major'], '7') < 0)) {
-    fail("Module ${module_name} is not supported on ${::operatingsystem}")
+  if (($facts['os']['family'] != 'RedHat') or (versioncmp($facts['os']['release']['major'], '7') < 0)) {
+    fail("Module ${module_name} is not supported on ${facts['os']['name']}")
   }
 
   # $name is provided at define invocation

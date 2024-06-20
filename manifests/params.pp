@@ -26,7 +26,7 @@ class slurm::params {
   #### MODULE INTERNAL VARIABLES  #########
   # (Modify to adapt to unsupported OSes)
   #########################################
-  $pre_requisite_packages = $::osfamily ? {
+  $pre_requisite_packages = $facts['os']['family'] ? {
     'Redhat' => [
       'hwloc', 'hwloc-devel', 'hwloc-plugins', 'numactl', 'numactl-devel',
       'http-parser-devel', 'json-c-devel',
@@ -45,7 +45,7 @@ class slurm::params {
   }
 
   # Probably out of scope here, but useful
-  $extra_packages = $::osfamily ? {
+  $extra_packages = $facts['os']['family'] ? {
     'Redhat' => [
       'libibmad', 'rrdtool-devel',
     ],
@@ -63,17 +63,17 @@ class slurm::params {
   $manage_accounting = false
 
   # Configuration directory & file
-  $configdir = $::operatingsystem ? {
+  $configdir = $facts['os']['name'] ? {
     default => '/etc/slurm',
   }
-  $logdir = $::operatingsystem ? {
+  $logdir = $facts['os']['name'] ? {
     default => '/var/log/slurm'
   }
   # $piddir = $::operatingsystem ? {
   #   default => '/var/run/slurm',
   # }
   # Slurm controller save state directory
-  $slurmctld_libdir = $::operatingsystem ? {
+  $slurmctld_libdir = $facts['os']['name'] ? {
     default => '/var/lib/slurmctld',
   }
 
@@ -130,16 +130,16 @@ class slurm::params {
   # The name by which this Slurm managed cluster is known in the accounting database
   $clustername             = 'cluster'
   # Main / backup Slurm controllers
-  $slurmctldhost           = $::hostname
+  $slurmctldhost           = $facts['networking']['hostname']
   $slurmctldaddr           = ''
   # OLD Deprecated
-  $controlmachine          = $::hostname
+  $controlmachine          = $facts['networking']['hostname']
   $controladdr             = ''
   $backupcontroller        = ''
   $backupaddr              = ''
 
   # Accounting storage slurmdbd server
-  $accountingstoragehost   = $::hostname
+  $accountingstoragehost   = $facts['networking']['hostname']
   $accountingstorageexternalhost = []
   $accountingstoreflags = []
   # Authentication method for communications between Slurm components.
@@ -195,7 +195,7 @@ class slurm::params {
   $launchparameters        = ''
   $launchtype              = 'slurm'
   $licenses                = ''          # Specification of licenses
-  $maildomain              = $::domain
+  $maildomain              = $facts['networking']['domain']
   $mailprog                = '/bin/mail'
   $maxarraysize            = undef
   $maxjobcount             = undef
@@ -401,13 +401,13 @@ class slurm::params {
   $shell    = '/bin/bash'
 
   # Slurmd associated services
-  $servicename = $::operatingsystem ? {
+  $servicename = $facts['os']['name'] ? {
     default => 'slurmd'
   }
-  $controller_servicename = $::operatingsystem ? {
+  $controller_servicename = $facts['os']['name'] ? {
     default => 'slurmctld'
   }
-  $dbd_servicename = $::operatingsystem ? {
+  $dbd_servicename = $facts['os']['name'] ? {
     default => 'slurmdbd'
   }
   # used for pattern in a service ressource
@@ -415,12 +415,12 @@ class slurm::params {
   $controller_processname = $controller_servicename
   $dbd_processname        = $dbd_servicename
 
-  $hasstatus = $::operatingsystem ? {
+  $hasstatus = $facts['os']['name'] ? {
     /(?i-mx:ubuntu|debian)/        => false,
     /(?i-mx:centos|fedora|redhat)/ => true,
     default => true,
   }
-  $hasrestart = $::operatingsystem ? {
+  $hasrestart = $facts['os']['name'] ? {
     default => true,
   }
   # Whether to manage the slurm services
@@ -431,7 +431,7 @@ class slurm::params {
   ##########################################
   # Which group install is required to build the Slurm sources -- see slurm::build[::redhat]
   # Makes only sense on yum-based systems
-  $groupinstall = $::osfamily ? {
+  $groupinstall = $facts['os']['family'] ? {
     'Redhat' => 'Development tools',
     default  => undef
   }
@@ -448,12 +448,12 @@ class slurm::params {
   $do_build            = true
   $do_package_install  = true
   # Where to place the sources
-  $srcdir = $::operatingsystem ? {
+  $srcdir = $facts['os']['name'] ? {
     default => '/usr/local/src'
   }
   ### Slurm Build
   # Where to place the builds of the sources (i.e. RPMs, debs...)
-  $builddir = $::osfamily ? {
+  $builddir = $facts['os']['family'] ? {
     'Redhat' => '/root/rpmbuild', # rpmbuild _topdir Build directory
     default  => '/tmp/slurmbuild',
   }
@@ -555,32 +555,32 @@ class slurm::params {
   # Set the content of the DAEMON_ARGS variable
   $munge_daemon_args = []
   # Packages to install
-  $munge_package = $::operatingsystem ? {
+  $munge_package = $facts['os']['name'] ? {
     default => 'munge'
   }
-  $munge_extra_packages = $::operatingsystem ? {
+  $munge_extra_packages = $facts['os']['name'] ? {
     /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
     /(?i-mx:centos|fedora|redhat|rocky)/ => [ 'munge-devel', 'munge-libs' ],
     default => [],
   }
 
-  $munge_configdir = $::operatingsystem ? {
+  $munge_configdir = $facts['os']['name'] ? {
     default => '/etc/munge',
   }
-  $munge_logdir = $::operatingsystem ? {
+  $munge_logdir = $facts['os']['name'] ? {
     default => '/var/log/munge',
   }
-  $munge_piddir = $::operatingsystem ? {
+  $munge_piddir = $facts['os']['name'] ? {
     default => '/var/run/munge',
   }
-  $munge_default_sysconfig = $::operatingsystem ? {
+  $munge_default_sysconfig = $facts['os']['name'] ? {
     /(?i-mx:ubuntu|debian)/ => '/etc/default/munge',
     default                 => '/etc/sysconfig/munge'
   }
-  $munge_servicename = $::operatingsystem ? {
+  $munge_servicename = $facts['os']['name'] ? {
     default => 'munge'
   }
-  $munge_processname = $::operatingsystem ? {
+  $munge_processname = $facts['os']['name'] ? {
     default => 'munge'
   }
 
@@ -631,7 +631,7 @@ class slurm::params {
   $dbdhost             = 'localhost'
   $dbdaddr             = 'localhost'
   $dbdbackuphost       = ''
-  $storagehost         = $::hostname
+  $storagehost         = $facts['networking']['hostname']
   $storagebackuphost   = ''
   $storageloc          = 'slurm'    # name of the DB as the location where accounting records are written
   $storageport         = 3306

@@ -69,7 +69,7 @@ inherits slurm::params
   validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
   #validate_legacy('Boolean', 'validate_bool', $create_key)
 
-  if ($::osfamily == 'RedHat') {
+  if ($facts['os']['family'] == 'RedHat') {
     include ::epel
   }
 
