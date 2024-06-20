@@ -4,6 +4,17 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.4.10' into devel. [Hyacinthe Cartiaux]
+
+  v1.4.10
+
+
+v1.4.10 (2024-06-20)
+--------------------
+- Merge branch 'release/1.4.10' into production. [Hyacinthe Cartiaux]
+- Bump to version '1.4.10' [Hyacinthe Cartiaux]
+- Lint! Fixed legacy facts. [Hyacinthe Cartiaux]
+- Synchronize Changelog with latest commits. [Teddy Rodrigues Valette]
 - Merge tag 'v1.4.9' into devel. [Teddy Rodrigues Valette]
 
   v1.4.9
