@@ -247,15 +247,23 @@ inherits slurm
 
     # Eventually create the 'slurm'@'*' user with all rights
     unique([ $storagehost, $facts['networking']['hostname'], $facts['networking']['fqdn']]).each |String $host| {
-      mysql_user { "${storageuser}@${host}":
-        password_hash => mysql_password($storagepass),
+      if $host.length < 60 {
+        mysql_user { "${storageuser}@${host}":
+          password_hash => mysql_password($storagepass),
+        }
+        mysql_grant {  "${storageuser}@${host}/${storageloc}.*":
+          privileges => ['ALL'],
+          table      => "${storageloc}.*",
+          user       => "${storageuser}@${host}",
+          require    => Mysql_user["${storageuser}@${host}"],
+          before     => File[$slurm::params::dbd_configfile],
+        }
       }
-      mysql_grant {  "${storageuser}@${host}/${storageloc}.*":
-        privileges => ['ALL'],
-        table      => "${storageloc}.*",
-        user       => "${storageuser}@${host}",
-        require    => Mysql_user["${storageuser}@${host}"],
-        before     => File[$slurm::params::dbd_configfile],
+      else {
+        notify { "too-long-hostname_${host}":
+          message  => "Hostname ${host} is too long to use for mysql auth, skipping",
+          loglevel => warning,
+        }
       }
     }
   }
