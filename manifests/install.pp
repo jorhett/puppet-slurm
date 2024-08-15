@@ -48,7 +48,10 @@ class slurm::install {
       slurmctld => ($slurm::with_slurmctld or defined(Class['::slurm::slurmctld'])),
       slurmdbd  => ($slurm::with_slurmdbd  or defined(Class['::slurm::slurmdbd'])),
       wrappers  => $slurm::wrappers,
-      require   => Slurm::Build[$slurm::version],
+      require   => $slurm::do_build ? {
+        true  => Slurm::Build[$slurm::version],
+        false => undef
+      }
     }
   }
 }

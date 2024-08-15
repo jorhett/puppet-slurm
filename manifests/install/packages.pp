@@ -145,12 +145,13 @@ define slurm::install::packages(
     'Redhat': {
       include ::epel
       include ::yum
-      $rpms   = suffix($pkgs, '*.rpm')
-      $cwddir = "${pkgdir}/RPMS/${facts['os']['architecture']}"
-      # $cwddir = ($pkgdir == $slurm::params::builddir) ? {
-      #   true    => "${pkgdir}/RPMS/${::architecture}",
-      #   default => $pkgdir,
-      # }
+      if $slurm::do_build {
+        $rpms   = suffix($pkgs, '*.rpm')
+        $cwddir = "${pkgdir}/RPMS/${facts['os']['architecture']}"
+        # $cwddir = ($pkgdir == $slurm::params::builddir) ? {
+        #   true    => "${pkgdir}/RPMS/${::architecture}",
+        #   default => $pkgdir,
+      }
       case $ensure {
         'absent': {
           #$execname = "yum-remove-slurm*${version}*.rpm"
@@ -165,10 +166,12 @@ define slurm::install::packages(
                 require => Package['slurm']
               }
             }
-            Package[$pkg] {
-              provider        => 'rpm',
-              install_options => [ '--nodeps' ],
-              source          => "${cwddir}/${pkg}-${version}*.rpm",
+            if $slurm::do_build {
+              Package[$pkg] {
+                provider        => 'rpm',
+                install_options => [ '--nodeps' ],
+                source          => "${cwddir}/${pkg}-${version}*.rpm",
+              }
             }
           }
         }
@@ -192,7 +195,6 @@ define slurm::install::packages(
     exec { "uninstall-slurm*${version}*":
       path    => '/sbin:/usr/bin:/usr/sbin:/bin',
       command => $cmd,
-      cwd     => $cwddir,
       onlyif  => $check_onlyif,
       unless  => $check_unless,
       user    => 'root',
