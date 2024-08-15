@@ -29,7 +29,7 @@ class slurm::slurmctld inherits slurm
     'present' => 'directory',
     default   => $slurm::ensure
   }
-  file { $slurm::params::slurmctld_libdir:
+  file { $slurm::statesavelocation:
     ensure => $dir_ensure,
     owner  => $slurm::params::username,
     group  => $slurm::params::group,

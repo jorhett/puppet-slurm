@@ -128,7 +128,7 @@ SlurmdParameters=<%=  scope['slurm::slurmdparameters'].join(',')  %>
 <% end -%>
 SlurmdPidFile=/var/run/slurmd.pid
 SlurmdPort=<%= scope['slurm::slurmdport'] %>
-SlurmdSpoolDir=/var/lib/slurmd
+SlurmdSpoolDir=<%= scope['slurm::statesavelocation'] %>
 <% if scope['slurm::srunepilog'].empty? -%>
 #SrunEpilog=
 <% else -%>
@@ -561,7 +561,9 @@ TopologyPlugin=topology/<%= scope['slurm::topology'] %>
 #######################
 # - Characteristics (sockets, cores, threads, memory, features)
 # - Network addresses
+<% unless scope.call_function('versioncmp', [scope['slurm::version'], '24.05']) >= 0 %>
 CoreSpecPlugin=core_spec/<%= scope['slurm::corespecplugin'] %>
+<% end -%>
 <% unless scope['slurm::cpufreqdef'].nil? -%>
 CpuFreqDef=<%= scope['slurm::cpufreqdef'] %>
 <% end -%>
