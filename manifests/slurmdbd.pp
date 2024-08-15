@@ -17,8 +17,8 @@
 # More details on <https://slurm.schedmd.com/slurmdbd.html>
 # See also <https://slurm.schedmd.com/slurmdbd.conf.html>
 #
-# @param ensure [String] Default: 'present'.
-#         Ensure the presence (or absence) of slurm
+# @param ensure
+#         Ensure the presence (or absence) of slurm - Default: 'present'
 # @param content [String]
 #          The desired contents of a file, as a string. This attribute is
 #          mutually exclusive with source and target.
@@ -131,10 +131,10 @@
 # [Remember: No empty lines between comments and class definition]
 #
 class slurm::slurmdbd(
-  String  $ensure             = $slurm::ensure,
-  $content                    = undef,
-  $source                     = undef,
-  $target                     = undef,
+  Enum['present', 'absent'] $ensure  = $slurm::ensure,
+  Optional[String]          $content = undef,
+  Optional[String]          $source  = undef,
+  Optional[String]          $target  = undef,
   #
   # Main configuration paramaters
   #
@@ -179,8 +179,6 @@ class slurm::slurmdbd(
 )
 inherits slurm
 {
-  validate_legacy('String', 'validate_re', $ensure, ['^present', '^absent'])
-
   case $facts['os']['family'] {
     'Redhat': { }
     default:  { fail("Module ${module_name} is not supported on ${facts['os']['name']}") }

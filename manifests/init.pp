@@ -18,8 +18,8 @@
 #
 # More details on <https://slurm.schedmd.com/>
 #
-# @param ensure [String] Default: 'present'.
-#         Ensure the presence (or absence) of slurm
+# @param ensure
+#         Ensure the presence (or absence) of slurm - Default: 'present'.
 # @param content [String]
 #          The desired contents of a file, as a string. This attribute is
 #          mutually exclusive with source and target.
@@ -507,7 +507,7 @@
 # [Remember: No empty lines between comments and class definition]
 #
 class slurm(
-  String  $ensure                         = $slurm::params::ensure,
+  Enum['present', 'absent'] $ensure       = $slurm::params::ensure,
   $content                                = undef,
   $custom_content                         = undef,
   $source                                 = undef,
@@ -768,8 +768,6 @@ class slurm(
 )
 inherits slurm::params
 {
-  validate_legacy('String', 'validate_re', $ensure, ['^present', '^absent'])
-
   info ("Configuring SLURM (with ensure = ${ensure})")
 
   case $facts['os']['family'] {

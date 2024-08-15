@@ -19,8 +19,8 @@
 # and a working SLURMDBD.
 # The name of this resource is expected to be the qos name.
 #
-# @param ensure [String]  Default: 'present'
-#          Ensure the presence (or absence) of the entity
+# @param ensure
+#          Ensure the presence (or absence) of the entity - Default: 'present'
 # @param cluster [String] Default: 'cluster'
 #          Cluster name on which the specified resources are to be available
 # @param options [Hash] Default: {}
@@ -32,12 +32,11 @@
 #                          MaxWall=, Names=, Organization=, Parent=,
 #                          and QosLevel=
 define slurm::acct::account(
-  String $ensure  = $slurm::params::ensure,
-  String $cluster = '',
-  Hash   $options = {},
+  Enum['present', 'absent'] $ensure  = $slurm::params::ensure,
+  String                    $cluster = '',
+  Hash                      $options = {},
 )
 {
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
   $real_clustername = empty($slurm::clustername) ? {
     true    => '',
     default => $slurm::clustername,

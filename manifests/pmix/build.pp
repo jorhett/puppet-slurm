@@ -14,8 +14,8 @@
 # This assumes the sources have been downloaded using slurm::pmix::download
 #
 #
-# @param ensure  [String]  Default: 'present'
-#          Ensure the presence (or absence) of building
+# @param ensure
+#          Ensure the presence (or absence) of building - Default: 'present'
 # @param srcdir  [String] Default: '/usr/local/src'
 #          Where the [downloaded] Slurm sources are located
 # @param dir     [String] Default: '/root/rpmbuild' on redhat systems
@@ -52,18 +52,20 @@
 # with slurm-libmpi).
 #
 define slurm::pmix::build(
-  String  $ensure  = $slurm::params::ensure,
-  String  $srcdir  = $slurm::params::srcdir,
-  String  $dir     = $slurm::params::builddir,
-  Array   $defines = [],
+  Enum['present', 'absent'] $ensure  = $slurm::params::ensure,
+  String                    $srcdir  = $slurm::params::srcdir,
+  String                    $dir     = $slurm::params::builddir,
+  Array                     $defines = [],
 )
 {
   include ::slurm::params
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-  validate_legacy('String',  'validate_re',   $name,   [ '\d+[\.-]?' ])
 
   # $name is provided at define invocation
-  $version = $name
+  $version = $name ? {
+    Pattern[/\d+[\.-]?/] => $name,
+    Integer              => $name,
+    default              => fail("\$name must contain only digits, periods, and dashes")
+  }
 
   # Path to the PMIx sources
   $src = "${srcdir}/pmix-${version}.tar.bz2"
