@@ -4,6 +4,51 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.5.0' into devel. [Hyacinthe Cartiaux]
+
+  v1.5.0
+
+
+v1.5.0 (2024-08-23)
+-------------------
+- Merge branch 'release/1.5.0' into production. [Hyacinthe Cartiaux]
+- Bump to version '1.5.0' [Hyacinthe Cartiaux]
+- Bundle update. [Hyacinthe Cartiaux]
+- Munge key content can be either a string or binary object. [Hyacinthe
+  Cartiaux]
+- Merge pull request #71 from jorhett/allow-pure-package-installation.
+  [Hyacinthe Cartiaux]
+
+  Apply broken when do_build is false
+- Apply broken when do_build is false. [Jo Rhett]
+- Merge pull request #70 from jorhett/fix-missing-spool-directory.
+  [Hyacinthe Cartiaux]
+
+  Fix missing spool directory, pidfile location, obsoleted specplugin
+- Fix missing spool directory, pidfile location, obsoleted specplugin.
+  [Jo Rhett]
+- Merge pull request #72 from jorhett/replace-validate-legacy-with-data-
+  types. [Hyacinthe Cartiaux]
+
+  Replace obsolete validate_legacy with data type tests
+- Replace obsolete validate_legacy with data type tests. [Jo Rhett]
+- Merge pull request #73 from jorhett/update-mysql-module. [Hyacinthe
+  Cartiaux]
+
+  Update mysql dependency to moodern versions, replace legacy password function
+- Merge branch 'devel' into update-mysql-module. [Hyacinthe Cartiaux]
+- Merge pull request #76 from jorhett/skip-too-long-mysql-hostnames.
+  [Hyacinthe Cartiaux]
+
+  Avoid mysql failures with too-long host names
+- Avoid mysql failures with too-long host names. [Jo Rhett]
+- Update mysql dependency to moodern versions, replace legacy password
+  function. [Jo Rhett]
+- Update mkdocs.yml - use nav instead of pages. [Hyacinthe Cartiaux]
+- Gemfile.lock update - fix dependabot alerts. [Hyacinthe Cartiaux]
+- Add missing .readthedocs file. [Hyacinthe Cartiaux]
+- Gemfile.lock - update. [Hyacinthe Cartiaux]
+- Synchronize Changelog with latest commits. [Hyacinthe Cartiaux]
 - Merge tag 'v1.4.10' into devel. [Hyacinthe Cartiaux]
 
   v1.4.10
