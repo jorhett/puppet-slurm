@@ -56,6 +56,8 @@
 #          Do we perform the build of the Slurm packages from sources or not?
 # @param do_package_install       [Boolean]     Default: true
 #          Do we perform the install of the Slurm packages or not?
+# @param package_install_options  [Array]       Default: []
+#          installation_options for the package resource
 # @param wrappers                 [Array]       Default: [ 'slurm-openlava',  'slurm-torque' ]
 #          Extra wrappers/package to install (ex: openlava/LSF wrapper, Torque/PBS wrappers)
 # @param src_checksum             [String]      Default: ''
@@ -527,6 +529,7 @@ class slurm(
   # Slurm source building
   Boolean $do_build                       = $slurm::params::do_build,
   Boolean $do_package_install             = $slurm::params::do_package_install,
+  Array[String] $package_install_options  = [],  # values from hiera data
   String  $src_checksum                   = $slurm::params::src_checksum,
   String  $src_checksum_type              = $slurm::params::src_checksum_type,
   String  $srcdir                         = $slurm::params::srcdir,
