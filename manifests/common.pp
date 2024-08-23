@@ -33,7 +33,8 @@ class slurm::common {
   }
 
   package { $all_packages:
-    ensure => 'present',
+    ensure          => 'present',
+    install_options => $slurm::package_install_options,
   }
 
   # Prepare the user and group

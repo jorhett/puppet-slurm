@@ -37,7 +37,7 @@ LogFile=<%= scope['slurm::logdir'] %>/slurmdbd.log
 DebugLevelSyslog=<%= scope['slurm::slurmdbddebugsyslog']%>
 <% end -%>
 
-#PidFile=/var/run/slurmdbd.pid
+PidFile=/var/run/slurmdbd/slurmdbd.pid  # created by RuntimeDirectory options in service
 # Authentication for communications with the other Slurm components
 AuthType=auth/<%= scope['slurm::authtype'] %>
 <% unless scope['slurm::authinfo'].empty? -%>

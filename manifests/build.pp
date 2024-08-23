@@ -14,8 +14,8 @@
 # This assumes the sources have been downloaded using slurm::download
 #
 #
-# @param ensure  [String]  Default: 'present'
-#          Ensure the presence (or absence) of building
+# @param ensure
+#          Ensure the presence (or absence) of building - Default: 'present'
 # @param srcdir  [String] Default: '/usr/local/src'
 #          Where the [downloaded] Slurm sources are located
 # @param dir     [String] Default: '/root/rpmbuild' on redhat systems
@@ -60,19 +60,21 @@
 #      slurm-torque-19.05.3-2.el7.x86_64.rpm
 #
 define slurm::build(
-  String  $ensure  = $slurm::params::ensure,
-  String  $srcdir  = $slurm::params::srcdir,
-  String  $dir     = $slurm::params::builddir,
-  Array   $with    = $slurm::params::build_with,
-  Array   $without = $slurm::params::build_without,
+  Enum['present', 'absent'] $ensure  = $slurm::params::ensure,
+  String                    $srcdir  = $slurm::params::srcdir,
+  String                    $dir     = $slurm::params::builddir,
+  Array                     $with    = $slurm::params::build_with,
+  Array                     $without = $slurm::params::build_without,
 )
 {
   include ::slurm::params
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-  validate_legacy('String',  'validate_re',   $name,   [ '\d+[\.-]?' ])
 
   # $name is provided at define invocation
-  $version = $name
+  $version = $name ? {
+    Pattern[/\d+[\.-]?/] => $name,
+    Integer              => $name,
+    default              => fail("\$name must contain only digits, periods, and dashes")
+  }
 
   # Path to the SLURM sources
   $src = "${srcdir}/slurm-${version}.tar.bz2"

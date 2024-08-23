@@ -15,8 +15,8 @@
 # incompatible versions of libpmi.so and libpmi2.so.), for a given version for
 # PMIx passed as resource name.
 #
-# @param ensure     [String]  Default: 'present'
-#          Ensure the presence (or absence) of installation
+# @param ensure
+#          Ensure the presence (or absence) of installation - Default: 'present'
 # @param builddir   [String] Default: '/root/rpmbuild/' on redhat systems
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
@@ -31,16 +31,18 @@
 #
 #
 define slurm::pmix::install(
-  String  $ensure   = $slurm::params::ensure,
-  String  $builddir = $slurm::params::builddir,
+  Enum['present', 'absent'] $ensure   = $slurm::params::ensure,
+  String                    $builddir = $slurm::params::builddir,
 )
 {
   include ::slurm::params
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-  validate_legacy('String',  'validate_re',   $name,   [ '\d+[\.-]?' ])
 
   # $name is provided at define invocation
-  $version = $name
+  $version = $name ? {
+    Pattern[/\d+[\.-]?/] => $name,
+    Integer              => $name,
+    default              => fail("\$name must contain only digits, periods, and dashes")
+  }
 
   case $facts['os']['family'] {
     'Redhat': {

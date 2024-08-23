@@ -1,6 +1,6 @@
 {
   "name": "ULHPC-slurm",
-  "version": "1.4.10",
+  "version": "1.5.0",
   "author": "UL HPC Team",
   "summary": "Configure and manage Slurm: A Highly Scalable Resource Manager",
   "license": "Apache-2.0",
@@ -10,11 +10,11 @@
   "dependencies": [
     {
       "name": "puppetlabs-stdlib",
-      "version_requirement": ">=4.2.2 <7.0.0"
+      "version_requirement": ">=4.2.2 <10.0.0"
     },
     {
       "name": "puppetlabs-mysql",
-      "version_requirement": ">=6.0.0 <11.0.0"
+      "version_requirement": ">=10.0.0 <16.0.0"
     },
     {
       "name": "puppetlabs-vcsrepo",
@@ -58,7 +58,9 @@
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8",
+        "9"
       ]
     },
     {
@@ -66,14 +68,22 @@
       "operatingsystemrelease": [
         "6",
         "7",
-        "8"
+        "8",
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "AlmaLinux",
+      "operatingsystemrelease": [
+        "8",
+        "9"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.10.0 < 7.0.0"
+      "version_requirement": ">= 4.10.0 < 9.0.0"
     }
   ],
   "mail": "hpc-team@uni.lu",

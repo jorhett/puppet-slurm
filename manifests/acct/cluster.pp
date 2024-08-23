@@ -13,8 +13,8 @@
 # /!\ WARNING: this assumes you are using the MySQL plugin as SlurmDBD plugin and a working SLURMDBD.
 # The name of this resource is expected to be the cluster name.
 #
-# @param ensure [String]  Default: 'present'
-#          Ensure the presence (or absence) of the entity
+# @param ensure
+#          Ensure the presence (or absence) of the entity - Default: 'present'
 # @param options [Hash] Default: {}
 #          Specification options -- see https://slurm.schedmd.com/sacctmgr.html
 #          Elligible keys:  # Classification, Cluster, ClusterNodes,
@@ -34,11 +34,10 @@
 #
 #
 define slurm::acct::cluster(
-  String  $ensure  = $slurm::ensure,
-  Hash    $options = {}
+  Enum['present', 'absent'] $ensure  = $slurm::ensure,
+  Hash                      $options = {}
 )
 {
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
   slurm::acct::mgr { "cluster/${name}":
     ensure  => $ensure,
     entity  => 'cluster',

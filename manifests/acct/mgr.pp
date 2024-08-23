@@ -15,9 +15,9 @@
 # /!\ WARNING: this assumes you are using the MySQL plugin as SlurmDBD plugin
 # and a working SLURMDBD.
 #
-# @param ensure [String]  Default: 'present'
-#          Ensure the presence (or absence) of the cluster
-# @param entity [String]
+# @param ensure
+#          Ensure the presence (or absence) of the cluster - Default: 'present'
+# @param entity
 #          the entity to consider for the name of this resource.
 #          Elligible values in [ 'account',
 #                                'association',
@@ -42,30 +42,15 @@
 #          See https://slurm.schedmd.com/sacctmgr.html
 #
 define slurm::acct::mgr(
-  String $ensure  = $slurm::params::ensure,
-  String $entity  = '',
-  String $value   = '',
-  String $content = '',
-  $options        = undef,
+  Enum['present','absent'] $ensure  = $slurm::params::ensure,
+  Slurm::Entity            $entity  = '',
+  String                   $value   = '',
+  String                   $content = '',
+  Optional[Hash]           $options = undef,
 )
 {
   include ::slurm
   include ::slurm::params
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-  validate_legacy('String',  'validate_re',   $entity,
-  [ '^account',
-    '^association',
-    '^cluster',
-    '^coordinator',
-    '^event',
-    '^job',
-    '^qos',
-    '^Resource',
-    '^RunawayJobs',
-    '^stats',
-    '^transaction',
-    '^user',
-    '^wckeys'])
 
   $action = $ensure ? {
     'absent' => 'del',

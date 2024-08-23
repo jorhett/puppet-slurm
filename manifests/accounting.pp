@@ -11,18 +11,17 @@
 #
 # Setup the accounting structure
 #
-#@param ensure       [String]  Default: 'present'
-#          Ensure the presence (or absence) of the Munge service
+#@param ensure
+#          Ensure the presence (or absence) of the Munge service - Default: 'present'.
 #
 class slurm::accounting(
-  String  $ensure = $slurm::params::ensure,
-  $cluster        = undef,
-  $qos            = undef,
-  $account        = undef,
+  Enum['present', 'absent'] $ensure  = $slurm::params::ensure,
+  Optional[String]          $cluster = undef,
+  Optional[String]          $qos     = undef,
+  Optional[Stirng]          $account = undef,
 )
 inherits slurm::params
 {
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
   ### Clusters
   $clusters = $cluster ? {
     undef   => $slurm::clustername,

@@ -35,8 +35,8 @@
 #
 # Also, this server is expected to have push writes on the branch 'server/${::hostname}'
 #
-# @param ensure       [String]  Default: 'present'
-#          Ensure the presence (or absence) of the repository
+# @param ensure
+#          Ensure the presence (or absence) of the repository - Default: 'present'
 # @param force        [Boolean] Default: force
 #          Specifies whether to delete any existing files in the repository path
 #          if creating a new repository. Use with care.
@@ -72,22 +72,19 @@
   #  }
 #
 class slurm::repo(
-  String  $ensure      = $slurm::params::ensure,
-  String  $provider    = 'git',
-  String  $basedir     = $slurm::params::repo_basedir,
-  String  $path        = '',
-  $source              = undef,
-  String  $branch      = 'HEAD',
-  String  $syncscript  = '',
-  String  $linkdir     = '',
-  String  $link_subdir = '',
-  Boolean $force       = false,
+  Enum['present', 'absent', 'latest'] $ensure = $slurm::params::ensure,
+  Enum['git', 'bzr', 'hg', 'svn']     $provider    = 'git',
+  String                              $basedir     = $slurm::params::repo_basedir,
+  String                              $path        = '',
+  Optional[String]                    $source      = undef,
+  String                              $branch      = 'HEAD',
+  String                              $syncscript  = '',
+  String                              $linkdir     = '',
+  String                              $link_subdir = '',
+  Boolean                             $force       = false,
 )
 inherits slurm::params
 {
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent', '^latest'])
-  validate_legacy('String',  'validate_re',   $provider, ['^git', '^bzr', '^hg', '^svn'])
-
   if ($source == undef or empty($source)) {
     fail("Module ${module_name} requires a valid source to clone the SLURM control repository")
   }
