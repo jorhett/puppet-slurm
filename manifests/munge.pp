@@ -25,8 +25,8 @@
 #
 # See https://slurm.schedmd.com/authplugins.html
 #
-# @param ensure       [String]  Default: 'present'
-#          Ensure the presence (or absence) of the Munge service
+# @param ensure
+#          Ensure the presence (or absence) of the Munge service - Default: 'present'
 # @param create_key   [Boolean] Default: true
 #          Whether or not to generate a new key if it does not exists
 # @param daemon_args  [Array] Default: []
@@ -54,21 +54,18 @@
 # does not care about it
 #
 class slurm::munge(
-  String  $ensure         = $slurm::params::ensure,
-  Boolean $create_key     = $slurm::params::munge_create_key,
-  Array $daemon_args      = $slurm::params::munge_daemon_args,
-  Integer $uid            = $slurm::params::munge_uid,
-  Integer $gid            = $slurm::params::munge_gid,
-  String $key_filename    = $slurm::params::munge_key,
-  $key_source             = undef,
-  $key_content            = undef,
-  Boolean $service_manage = $slurm::service_manage,
+  Enum['present', 'absent'] $ensure         = $slurm::params::ensure,
+  Boolean                   $create_key     = $slurm::params::munge_create_key,
+  Array                     $daemon_args    = $slurm::params::munge_daemon_args,
+  Integer                   $uid            = $slurm::params::munge_uid,
+  Integer                   $gid            = $slurm::params::munge_gid,
+  String                    $key_filename   = $slurm::params::munge_key,
+  Optional[String]          $key_source     = undef,
+  Optional[String]          $key_content    = undef,
+  Boolean                   $service_manage = $slurm::service_manage,
 )
 inherits slurm::params
 {
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-  #validate_legacy('Boolean', 'validate_bool', $create_key)
-
   if ($facts['os']['family'] == 'RedHat') {
     include ::epel
   }

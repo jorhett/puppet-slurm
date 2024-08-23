@@ -15,8 +15,8 @@
 #
 # == Parameters
 #
-# @param ensure           [String]  Default: 'present'
-#        Ensure the presence (or absence) of slurm::pam
+# @param ensure
+#        Ensure the presence (or absence) of slurm::pam - Default: 'present'
 # @param allowed_users    [Array]  Default: []
 #        Manage login access (see PAM_ACCESS(8)) in addition to 'root'
 # @param content [String] Default: see 'templates/pam_slurm.erb'
@@ -37,19 +37,16 @@
 # /!\ We assume the RPM 'slurm-pam_slurm' has been already installed
 #
 class slurm::pam(
-  String  $ensure              = $slurm::params::ensure,
-  Array   $allowed_users       = $slurm::params::pam_allowed_users,
-  String  $configfile          = $slurm::params::pam_configfile,
-  String  $content             = $slurm::params::pam_content,
-  Hash    $ulimits             = $slurm::params::ulimits,
-  $ulimits_source              = undef,
-  Boolean $use_pam_slurm_adopt = $slurm::params::use_pam_slurm_adopt,
+  Enum['present', 'absent'] $ensure              = $slurm::params::ensure,
+  Array                     $allowed_users       = $slurm::params::pam_allowed_users,
+  String                    $configfile          = $slurm::params::pam_configfile,
+  String                    $content             = $slurm::params::pam_content,
+  Hash                      $ulimits             = $slurm::params::ulimits,
+  Optional[String]          $ulimits_source      = undef,
+  Boolean                   $use_pam_slurm_adopt = $slurm::params::use_pam_slurm_adopt,
 )
 inherits slurm::params
 {
-  validate_legacy('String', 'validate_re', $ensure, ['^present', '^absent'])
-  validate_legacy('String', 'validate_string', $content)
-
   # PAM access
   # Detect vagrant environment to include 'vagrant' in the list of allowed host otherwise
   # the application of this class will prevent the vagrant user to work as expected

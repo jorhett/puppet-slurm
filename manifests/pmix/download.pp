@@ -16,8 +16,8 @@
 #
 # Latest PMIx releases: https://github.com/openpmix/openpmix/releases
 #
-# @param ensure       [String]  Default: 'present'
-#          Ensure the presence (or absence) of building
+# @param ensure
+#          Ensure the presence (or absence) of building - Default: 'present'
 # @param target [String] Default: '/usr/local/src'
 #          Target directory for the downloaded sources
 # @param checksum_type [String] Default: 'sha1'
@@ -39,17 +39,15 @@
 #     }
 #
 define slurm::pmix::download(
-  String  $ensure          = $slurm::params::ensure,
-  String  $target          = $slurm::params::srcdir,
-  String  $url             = '',
-  String  $checksum        = '',
-  String  $checksum_type   = $slurm::params::pmix_src_checksum_type,
-  Boolean $checksum_verify = false,
+  Enum['present', 'absent'] $ensure          = $slurm::params::ensure,
+  String                    $target          = $slurm::params::srcdir,
+  String                    $url             = '',
+  String                    $checksum        = '',
+  String                    $checksum_type   = $slurm::params::pmix_src_checksum_type,
+  Boolean                   $checksum_verify = false,
 )
 {
   include ::slurm::params
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-  validate_legacy('String',  'validate_re',   $name,   [ '\d+[\.-]?' ])
 
   # $name is provided at define invocation
   if $name =~ /pmix-(.*)\.tar\.bz2/ {  # Full archive name provided

@@ -12,8 +12,8 @@
 # This definition takes care of installing the Slurm packages, typically built
 # from slurm::build, for a given version passed as resource name.
 #
-# @param ensure       [String]  Default: 'present'
-#          Ensure the presence (or absence) of building
+# @param ensure
+#          Ensure the presence (or absence) of building - Default: 'present'
 # @param pkgdir     [String] Default: '/root/rpmbuild' on redhat systems
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
@@ -52,21 +52,23 @@
 #     }
 #
 define slurm::install::packages(
-  String  $ensure           = $slurm::params::ensure,
-  String  $pkgdir           = $slurm::params::builddir,
-  Boolean $slurmd           = $slurm::params::with_slurmd,
-  Boolean $slurmctld        = $slurm::params::with_slurmctld,
-  Boolean $slurmdbd         = $slurm::params::with_slurmdbd,
-  Optional[Array] $wrappers = [],
-  Optional[Array] $packages = []
+  Enum['present', 'absent'] $ensure    = $slurm::params::ensure,
+  String                    $pkgdir    = $slurm::params::builddir,
+  Boolean                   $slurmd    = $slurm::params::with_slurmd,
+  Boolean                   $slurmctld = $slurm::params::with_slurmctld,
+  Boolean                   $slurmdbd  = $slurm::params::with_slurmdbd,
+  Optional[Array]           $wrappers  = [],
+  Optional[Array]           $packages  = []
 )
 {
   include ::slurm::params
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-  validate_legacy('String',  'validate_re',   $name,   [ '\d+[\.-]?' ])
 
   # $name is provided at define invocation
-  $version = $name
+  $version = $name ? {
+    Pattern[/\d+[\.-]?/] => $name,
+    Integer              => $name,
+    default              => fail("\$name must contain only digits, periods, and dashes")
+  }
 
   if !($slurmd or $slurmctld or $slurmdbd or defined(Class['slurm::login']) or !empty($packages))
   {

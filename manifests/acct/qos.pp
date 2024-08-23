@@ -17,8 +17,8 @@
 # and a working SLURMDBD.
 # The name of this resource is expected to be the qos name.
 #
-# @param ensure      [String]            Default: 'present'
-#          Ensure the presence (or absence) of the entity
+# @param ensure
+#          Ensure the presence (or absence) of the entity  - Default: 'present'
 # @param priority    [Integer]           Default: 0
 # @param options     [Hash]              Default: {}
 #          Specification options -- see https://slurm.schedmd.com/sacctmgr.html
@@ -45,13 +45,12 @@
 #
 # @example
 define slurm::acct::qos(
-  String  $ensure   = $slurm::params::ensure,
-  Integer $priority = 0,
-  String  $content  = '',
-  Hash    $options  = {},
+  Enum['present', 'absent'] $ensure   = $slurm::params::ensure,
+  Integer                   $priority = 0,
+  String                    $content  = '',
+  Hash                      $options  = {},
 )
 {
-  validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
   $default_options = {
     'priority' => $priority,
   }
