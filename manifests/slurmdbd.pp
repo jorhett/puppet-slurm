@@ -249,7 +249,7 @@ inherits slurm
     unique([ $storagehost, $facts['networking']['hostname'], $facts['networking']['fqdn']]).each |String $host| {
       if $host.length < 60 {
         mysql_user { "${storageuser}@${host}":
-          password_hash => mysql_password($storagepass),
+          password_hash => mysql::password($storagepass),
         }
         mysql_grant {  "${storageuser}@${host}/${storageloc}.*":
           privileges => ['ALL'],
