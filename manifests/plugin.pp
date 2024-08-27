@@ -25,15 +25,14 @@
 #          Target link path
 #
 #
-define slurm::plugin(
+define slurm::plugin (
   Enum['present', 'absent']      $ensure  = $slurm::params::ensure,
   Optional[Stdlib::Absolutepath] $path    = '/usr/local/src',
   Optional[Stdlib::Absolutepath] $target  = undef,
   Optional[String]               $source  = undef,
   Optional[String]               $content = undef,
-)
-{
-  include ::slurm::params
+) {
+  include slurm::params
 
   # $name is provided at define invocation
   # if $name =~ /slurm-(.*)\.tar\.bz2/ {  # Full archive name provided

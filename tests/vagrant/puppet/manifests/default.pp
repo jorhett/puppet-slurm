@@ -9,7 +9,7 @@ node default {
   # Typically these are only needed in special cases but are good to have
   stage { ['pre', 'post']: }
   Stage['pre'] -> Stage['main'] -> Stage['post']
-  Package{ ensure => 'present' }
+  Package { ensure => 'present' }
 
   # Check that the hiera configuration is working...
   # if not the puppet provisioning will fail.
@@ -17,5 +17,5 @@ node default {
   notice("Role: ${facts['role']}")
   #notice("Message: ${msg}")
 
-  lookup('profiles', {merge => unique}).contain
+  lookup('profiles', { merge => unique }).contain
 }

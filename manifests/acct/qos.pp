@@ -32,25 +32,24 @@
 # @example Adding the qos 'qos-interactive' to Slurm
 #
 # slurm::acct::qos { 'qos-interactive':
-  #   ensure    => 'present',
-  #   priority  => 20,
-  #   options   => {
-    #     preempt  => 'qos-besteffort',
-    #     grpnodes => 30,
-    #   }
-  # }
+#   ensure    => 'present',
+#   priority  => 20,
+#   options   => {
+#     preempt  => 'qos-besteffort',
+#     grpnodes => 30,
+#   }
+# }
 #
 # this will run the following command:
 #   sacctmgr -i add qos qos-interactive Priority=20 Preempt=qos-besteffort Grpnodes=30
 #
 # @example
-define slurm::acct::qos(
+define slurm::acct::qos (
   Enum['present', 'absent'] $ensure   = $slurm::params::ensure,
   Integer                   $priority = 0,
   String                    $content  = '',
   Hash                      $options  = {},
-)
-{
+) {
   $default_options = {
     'priority' => $priority,
   }

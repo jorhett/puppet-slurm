@@ -61,17 +61,17 @@
 # @example Clone the SLURM control repository into '/usr/local/src/git/ULHPC/slurm'
 # # Create the SSH key, using for instance the maestrodev/ssh_keygen module
 # ssh_keygen { $slurm::username:
-  #    comment => "${slurm::username}@${::fqdn}",
-  #    home    => $slurm::params::home,
-  #  }
+#    comment => "${slurm::username}@${::fqdn}",
+#    home    => $slurm::params::home,
+#  }
 # # /!\ Render the host key known globally using sshkey { ... }
 # # Now you can expect the clone to work
 # class { 'slurm::repo':
-  #     ensure => 'present',
-  #     source => 'ssh://git@gitlab.uni.lu:8022/ULHPC/slurm.git',
-  #  }
+#     ensure => 'present',
+#     source => 'ssh://git@gitlab.uni.lu:8022/ULHPC/slurm.git',
+#  }
 #
-class slurm::repo(
+class slurm::repo (
   Enum['present', 'absent', 'latest'] $ensure = $slurm::params::ensure,
   Enum['git', 'bzr', 'hg', 'svn']     $provider    = 'git',
   String                              $basedir     = $slurm::params::repo_basedir,
@@ -83,8 +83,7 @@ class slurm::repo(
   String                              $link_subdir = '',
   Boolean                             $force       = false,
 )
-inherits slurm::params
-{
+inherits slurm::params {
   if ($source == undef or empty($source)) {
     fail("Module ${module_name} requires a valid source to clone the SLURM control repository")
   }
@@ -96,22 +95,22 @@ inherits slurm::params
     ''      => "${basedir}/${institute}/${reponame}",
     default => $path,
   }
-  $user = defined(Class[::slurm]) ? {
+  $user = defined(Class[slurm]) ? {
     true    => $slurm::username,
     default => 'root',
   }
-  $group = defined(Class[::slurm]) ? {
+  $group = defined(Class[slurm]) ? {
     true    => $slurm::group,
     default => 'root',
   }
 
-  if $ensure in [ 'present', 'latest' ] {
+  if $ensure in ['present', 'latest'] {
     exec { "mkdir -p ${real_path}":
       path   => '/sbin:/usr/bin:/usr/sbin:/bin',
       unless => "test -d ${real_path}",
       before => File[$real_path],
     }
-    [ dirname($real_path), $real_path ].each |String $d| {
+    [dirname($real_path), $real_path].each |String $d| {
       if !defined(File[$d]) {
         file { $d:
           ensure => 'directory',
@@ -173,5 +172,4 @@ inherits slurm::params
       target => $link_target,
     }
   }
-
 }

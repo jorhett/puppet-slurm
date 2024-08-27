@@ -38,25 +38,24 @@
 #        target        => '/usr/local/src/',
 #     }
 #
-define slurm::pmix::download(
+define slurm::pmix::download (
   Enum['present', 'absent'] $ensure          = $slurm::params::ensure,
   String                    $target          = $slurm::params::srcdir,
   String                    $url             = '',
   String                    $checksum        = '',
   String                    $checksum_type   = $slurm::params::pmix_src_checksum_type,
   Boolean                   $checksum_verify = false,
-)
-{
-  include ::slurm::params
+) {
+  include slurm::params
 
   # $name is provided at define invocation
-  if $name =~ /pmix-(.*)\.tar\.bz2/ {  # Full archive name provided
-  $archive = $name
-  $version = $1
+  if $name =~ /pmix-(.*)\.tar\.bz2/ { # Full archive name provided
+    $archive = $name
+    $version = $1
   }
-  elsif ($name =~ /\d+[\.-]?/ ) {       # only the version was provided
-  $version = $name
-  $archive = "pmix-${version}.tar.bz2"
+  elsif ($name =~ /\d+[\.-]?/ ) { # only the version was provided
+    $version = $name
+    $archive = "pmix-${version}.tar.bz2"
   }
   else { fail("Wrong specification for ${module_name}") }
 
@@ -93,7 +92,7 @@ define slurm::pmix::download(
     creates         => $path,
   }
   if $ensure == 'absent' {
-    file {$path:
+    file { $path:
       ensure  => $ensure,
       require => Archive[$archive],
     }
@@ -107,5 +106,4 @@ define slurm::pmix::download(
   #     before => Archive[$archive]
   #   }
   # }
-
 }

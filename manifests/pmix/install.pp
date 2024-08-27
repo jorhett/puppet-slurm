@@ -30,12 +30,11 @@
 #     }
 #
 #
-define slurm::pmix::install(
+define slurm::pmix::install (
   Enum['present', 'absent'] $ensure   = $slurm::params::ensure,
   String                    $builddir = $slurm::params::builddir,
-)
-{
-  include ::slurm::params
+) {
+  include slurm::params
 
   # $name is provided at define invocation
   $version = $name ? {
@@ -46,8 +45,8 @@ define slurm::pmix::install(
 
   case $facts['os']['family'] {
     'Redhat': {
-      include ::epel
-      include ::yum
+      include epel
+      include yum
       $rpmdir = "${builddir}/RPMS/${facts['os']['architecture']}"
       $rpm = "pmix-${version}*.rpm"
       $rpmdevel = "pmix-devel-${version}*.rpm"
@@ -64,12 +63,12 @@ define slurm::pmix::install(
           #  $check_unless = "test -n \"$(rpm -qa | grep -E 'pmix.*${version}')\""
           Package["pmix-${version}"] {
             provider        => 'rpm',
-            install_options => [ '--nodeps' ],
+            install_options => ['--nodeps'],
             source          => "${rpmdir}/${rpm}",
           }
           Package["pmix-devel-${version}"] {
             provider        => 'rpm',
-            install_options => [ '--nodeps' ],
+            install_options => ['--nodeps'],
             source          => "${rpmdir}/${rpmdevel}",
           }
         }
@@ -82,7 +81,7 @@ define slurm::pmix::install(
 
   # Let's go (independently of the distribution)
   if $ensure == 'present' {
-    package { [ "pmix-${version}", "pmix-devel-${version}" ]:
+    package { ["pmix-${version}", "pmix-devel-${version}"]:
       ensure  => $ensure,
     }
   }
@@ -96,5 +95,4 @@ define slurm::pmix::install(
       user    => 'root',
     }
   }
-
 }
