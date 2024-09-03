@@ -53,7 +53,7 @@
 # /!\ We assume the RPM 'slurm-munge' has been already installed -- this class
 # does not care about it
 #
-class slurm::munge(
+class slurm::munge (
   Enum['present', 'absent']        $ensure         = $slurm::params::ensure,
   Boolean                          $create_key     = $slurm::params::munge_create_key,
   Array                            $daemon_args    = $slurm::params::munge_daemon_args,
@@ -64,10 +64,9 @@ class slurm::munge(
   Optional[Variant[String,Binary]] $key_content    = undef,
   Boolean                          $service_manage = $slurm::service_manage,
 )
-inherits slurm::params
-{
+inherits slurm::params {
   if ($facts['os']['family'] == 'RedHat') {
-    include ::epel
+    include epel
   }
 
   # Order
@@ -111,7 +110,7 @@ inherits slurm::params
   }
 
   if $ensure == 'present' {
-    file { [ $slurm::params::munge_configdir, $slurm::params::munge_logdir ]:
+    file { [$slurm::params::munge_configdir, $slurm::params::munge_logdir]:
       ensure  => 'directory',
       owner   => $slurm::params::munge_username,
       group   => $slurm::params::munge_group,
@@ -140,7 +139,7 @@ inherits slurm::params
 
   # Create the key if needed
   if ($create_key and $ensure == 'present') {
-    class { '::rngd':
+    class { 'rngd':
       hwrng_device => '/dev/urandom',
     }
     exec { "create Munge key ${slurm::params::munge_key}":
@@ -152,7 +151,7 @@ inherits slurm::params
       require => [
         File[dirname($key_filename)],
         Package['munge'],
-        Class['::rngd']
+        Class['rngd']
       ],
     }
   }

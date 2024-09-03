@@ -41,16 +41,15 @@
 #          Specification options, preferably as a hash -- depends on the entity
 #          See https://slurm.schedmd.com/sacctmgr.html
 #
-define slurm::acct::mgr(
+define slurm::acct::mgr (
   Enum['present','absent'] $ensure  = $slurm::params::ensure,
   Slurm::Entity            $entity  = '',
   String                   $value   = '',
   String                   $content = '',
   Optional[Hash]           $options = undef,
-)
-{
-  include ::slurm
-  include ::slurm::params
+) {
+  include slurm
+  include slurm::params
 
   $action = $ensure ? {
     'absent' => 'del',
@@ -61,9 +60,9 @@ define slurm::acct::mgr(
     default => $value,
   }
   $cmd_options = ($options == undef) ? {
-    true    => [ ],
+    true    => [],
     default => ($options.is_a(String) or $options.is_a(Array)) ? {
-      true    => flatten([ $options ]),
+      true    => flatten([$options]),
       default => $options.map |$k, $v| {
         $key = ($k =~ /[A-Z]/) ? {
           true    => $k,
@@ -73,7 +72,7 @@ define slurm::acct::mgr(
           $v
         }
         else {
-          join([ $key, $v ], '=')
+          join([$key, $v], '=')
         }
       },
     }
@@ -100,7 +99,7 @@ define slurm::acct::mgr(
       path    => '/sbin:/usr/bin:/usr/sbin:/bin',
       command => $cmd,
       unless  => $check_unless,
-      require => Class['::slurm::config'],
+      require => Class['slurm::config'],
     }
   }
   else {

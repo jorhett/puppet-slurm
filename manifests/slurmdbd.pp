@@ -130,7 +130,7 @@
 #
 # [Remember: No empty lines between comments and class definition]
 #
-class slurm::slurmdbd(
+class slurm::slurmdbd (
   Enum['present', 'absent'] $ensure  = $slurm::ensure,
   Optional[String]          $content = undef,
   Optional[String]          $source  = undef,
@@ -177,15 +177,14 @@ class slurm::slurmdbd(
   Integer $innodb_lock_wait_timeout = $slurm::params::innodb_lock_wait_timeout,
   Boolean $bootstrap_mysql    = $slurm::params::bootstrap_mysql,
 )
-inherits slurm
-{
+inherits slurm {
   case $facts['os']['family'] {
-    'Redhat': { }
+    'Redhat': {}
     default:  { fail("Module ${module_name} is not supported on ${facts['os']['name']}") }
   }
 
-  include ::slurm::install
-  include ::slurm::config
+  include slurm::install
+  include slurm::config
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
@@ -210,7 +209,7 @@ inherits slurm
         default   => '127.0.0.1',
       }
     }
-    class { '::mysql::server':
+    class { 'mysql::server':
       override_options => {
         'mysqld' => {
           'bind-address'             => $bind_setting,
@@ -222,7 +221,7 @@ inherits slurm
       },
     }
 
-    include ::mysql::server::account_security
+    include mysql::server::account_security
 
     mysql::db { $storageloc:
       user     => $storageuser,
@@ -244,12 +243,12 @@ inherits slurm
     }
 
     # Eventually create the 'slurm'@'*' user with all rights
-    unique([ $storagehost, $facts['networking']['hostname'], $facts['networking']['fqdn']]).each |String $host| {
+    unique([$storagehost, $facts['networking']['hostname'], $facts['networking']['fqdn']]).each |String $host| {
       if $host.length < 60 {
         mysql_user { "${storageuser}@${host}":
           password_hash => mysql::password($storagepass),
         }
-        mysql_grant {  "${storageuser}@${host}/${storageloc}.*":
+        mysql_grant { "${storageuser}@${host}/${storageloc}.*":
           privileges => ['ALL'],
           table      => "${storageloc}.*",
           user       => "${storageuser}@${host}",
@@ -309,10 +308,9 @@ inherits slurm
   }
 
   if $slurm::service_manage == true {
-
     if $slurm::manage_accounting {
       # Ensure the cluster have been created
-      slurm::acct::cluster{ $slurm::clustername:
+      slurm::acct::cluster { $slurm::clustername:
         ensure  => $slurm::ensure,
         require => Service['slurmdbd'],
       }
@@ -336,6 +334,5 @@ inherits slurm
     if $slurm::with_slurmctld or defined(Class['slurm::slurmctld']) {
       Service['slurmdbd'] -> Service['slurmctld']
     }
-
   }
 }

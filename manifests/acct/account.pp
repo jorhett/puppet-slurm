@@ -31,12 +31,11 @@
 #                          MaxTRES=, MaxJobs=, MaxNodes=, MaxSubmitJobs=,
 #                          MaxWall=, Names=, Organization=, Parent=,
 #                          and QosLevel=
-define slurm::acct::account(
+define slurm::acct::account (
   Enum['present', 'absent'] $ensure  = $slurm::params::ensure,
   String                    $cluster = '',
   Hash                      $options = {},
-)
-{
+) {
   $real_clustername = empty($slurm::clustername) ? {
     true    => '',
     default => $slurm::clustername,

@@ -25,12 +25,11 @@
 #          Specification options -- see https://slurm.schedmd.com/sacctmgr.html
 #          Elligible keys:
 #
-define slurm::acct::user(
+define slurm::acct::user (
   Enum['present', 'absent'] $ensure         = $slurm::params::ensure,
   String                    $defaultaccount = '',
   Hash                      $options        = {},
-)
-{
+) {
   $default_options = empty($defaultaccount) ? {
     true    => {},
     default => { 'DefaultAccount' => $defaultaccount, }

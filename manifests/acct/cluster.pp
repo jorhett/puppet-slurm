@@ -27,17 +27,16 @@
 # @example Adding the cluster 'thor' to Slurm
 #
 #     slurm::acct::cluster { 'thor':
-  #     ensure    => 'present',
-  #   }
+#     ensure    => 'present',
+#   }
 #
 # TODO/ from the manpage, we can provide the following options to this definition
 #
 #
-define slurm::acct::cluster(
+define slurm::acct::cluster (
   Enum['present', 'absent'] $ensure  = $slurm::ensure,
   Hash                      $options = {}
-)
-{
+) {
   slurm::acct::mgr { "cluster/${name}":
     ensure  => $ensure,
     entity  => 'cluster',

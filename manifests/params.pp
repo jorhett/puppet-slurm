@@ -22,7 +22,6 @@
 # [Remember: No empty lines between comments and class definition]
 #
 class slurm::params {
-
   #### MODULE INTERNAL VARIABLES  #########
   # (Modify to adapt to unsupported OSes)
   #########################################
@@ -162,7 +161,7 @@ class slurm::params {
   $completewait            = 0
   $corespecplugin          = 'none'
   $cpufreqdef              = undef   # or in ['Conservative', 'OnDemand', 'Performance', 'PowerSave']
-  $cpufreqgovernors        = [ 'OnDemand', 'Performance' ]  # in above + 'UserSpace'
+  $cpufreqgovernors        = ['OnDemand', 'Performance']  # in above + 'UserSpace'
   $debugflags              = []
 
   $defmempercpu            = 0           # 0 = unlimited, mutually exclusive with $defmempernode
@@ -190,7 +189,7 @@ class slurm::params {
   $jobcomptype             = 'none'      # in ["none", "elasticsearch", "filetxt", "mysql", "script"]
   $jobcontainertype        = 'none'      # In ['cncu', 'none'] (CNCU = Compute Node Clean Up on Cray)
   $jobrequeue              = true
-  $jobsubmitplugins        = [ 'lua' ]   #
+  $jobsubmitplugins        = ['lua']   #
   $killwait                = 30          # sec. interval given to a job's processes between the SIGTERM and SIGKILL
   $launchparameters        = ''
   $launchtype              = 'slurm'
@@ -218,7 +217,7 @@ class slurm::params {
   # }
   $nodes                   = {}
 
-  $preemptmode             = [ 'REQUEUE' ] # in ['OFF','CANCEL','CHECKPOINT','GANG','REQUEUE','SUSPEND']
+  $preemptmode             = ['REQUEUE'] # in ['OFF','CANCEL','CHECKPOINT','GANG','REQUEUE','SUSPEND']
   $preempttype             = 'qos'         # in ['none', 'partition_prio', 'qos']
   $prioritydecayhalflife   = '5-0'         # aka 5 days
   $priorityfavorsmall      = false
@@ -241,7 +240,7 @@ class slurm::params {
   $prologflags             = []
   $prologslurmctld         = ''
   $propagateresourcelimits = []
-  $propagateresourcelimits_except = [ 'MEMLOCK'] # see https://slurm.schedmd.com/faq.html#memlock
+  $propagateresourcelimits_except = ['MEMLOCK'] # see https://slurm.schedmd.com/faq.html#memlock
   $reconfigflags           = []
   $resvoverrun             = 0
   $resumetimeout           = 60
@@ -261,7 +260,7 @@ class slurm::params {
   $schedulertype           = 'backfill' # in ['backfill', 'builtin', 'hold']
   $schedulerparameters     = []
   $selecttype              = 'cons_res' # in ['bluegene','cons_res','cray','linear','serial' ]
-  $selecttype_params       = [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
+  $selecttype_params       = ['CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK']
   # Log details
   $slurmdbddebug           = 'info'
   $slurmdbddebugsyslog     = ''
@@ -278,6 +277,7 @@ class slurm::params {
   $slurmdtimeout           = 300
   $slurmctldparameters     = []
   $slurmdparameters        = []
+  $slurmdspooldir          = ''
   $srunportrange           = '50000-53000'
   $srunepilog              = ''
   $srunprolog              = ''
@@ -559,8 +559,8 @@ class slurm::params {
     default => 'munge'
   }
   $munge_extra_packages = $facts['os']['name'] ? {
-    /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
-    /(?i-mx:centos|fedora|redhat|rocky)/ => [ 'munge-devel', 'munge-libs' ],
+    /(?i-mx:ubuntu|debian)/        => ['libmunge-dev'],
+    /(?i-mx:centos|fedora|redhat|rocky)/ => ['munge-devel', 'munge-libs'],
     default => [],
   }
 
@@ -648,5 +648,4 @@ class slurm::params {
   $innodb_buffer_pool_size  = '256M'
   $innodb_log_file_size     = '24M'
   $innodb_lock_wait_timeout = 500
-
 }

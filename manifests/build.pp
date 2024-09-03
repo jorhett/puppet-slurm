@@ -59,15 +59,14 @@
 #      slurm-slurmdbd-19.05.3-2.el7.x86_64.rpm
 #      slurm-torque-19.05.3-2.el7.x86_64.rpm
 #
-define slurm::build(
+define slurm::build (
   Enum['present', 'absent'] $ensure  = $slurm::params::ensure,
   String                    $srcdir  = $slurm::params::srcdir,
   String                    $dir     = $slurm::params::builddir,
   Array                     $with    = $slurm::params::build_with,
   Array                     $without = $slurm::params::build_without,
-)
-{
-  include ::slurm::params
+) {
+  include slurm::params
 
   # $name is provided at define invocation
   $version = $name ? {
@@ -81,7 +80,7 @@ define slurm::build(
 
   # Prepare the [RPM] build option
   $with_options = empty($with) ? {
-    true    =>  '',
+    true    => '',
     default => join(prefix($with, '--with '), ' ')
   }
   # NOT YET IMPLEMENTED:
@@ -90,7 +89,7 @@ define slurm::build(
   #    (by default, installed under /usr so all good...)
 
   $without_options = empty($without) ? {
-    true    =>  '',
+    true    => '',
     default => join(prefix($without, '--without '), ' ')
   }
 
@@ -102,9 +101,9 @@ define slurm::build(
 
   # Management of PMIx
   if ($slurm::with_pmix or ('pmix' in $with)) {
-    if !defined(Class['::slurm::pmix']) {
-      include ::slurm::pmix
-      Class['::slurm::pmix'] -> Exec[$buildname]
+    if !defined(Class['slurm::pmix']) {
+      include slurm::pmix
+      Class['slurm::pmix'] -> Exec[$buildname]
       # Slurm::Pmix::Install[$slurm::pmix::version] -> Exec[$buildname]
     }
     $define_pmix = "--define \"_with_pmix --with-pmix=${slurm::params::pmix_install_path}\""
@@ -114,20 +113,20 @@ define slurm::build(
 
   case $facts['os']['family'] {
     'Redhat': {
-      include ::epel
-      include ::yum
+      include epel
+      include yum
       if !defined(Yum::Group[$slurm::params::groupinstall]) {
         yum::group { $slurm::params::groupinstall:
           ensure  => 'present',
           timeout => 600,
-          require => Class['::epel'],
+          require => Class['epel'],
         }
       }
       Yum::Group[$slurm::params::groupinstall] -> Exec[$buildname]
 
       $rpmdir = "${dir}/RPMS/${facts['os']['architecture']}"
       $rpms   = prefix(suffix(concat($slurm::params::common_rpms_basename, $slurm::params::slurmdbd_rpms_basename),
-                              "-${version}*.rpm"), "${rpmdir}/")
+      "-${version}*.rpm"), "${rpmdir}/")
       # the below command should typically produce the following RPMs
       # slurm[-suffix]-<version>-1.el7.centos.x86_64.rpm
       case $ensure {

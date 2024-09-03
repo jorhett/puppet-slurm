@@ -51,14 +51,13 @@
 # In particular, ONLY THE FIRST RPM will be installed (to avoid the conflict
 # with slurm-libmpi).
 #
-define slurm::pmix::build(
+define slurm::pmix::build (
   Enum['present', 'absent'] $ensure  = $slurm::params::ensure,
   String                    $srcdir  = $slurm::params::srcdir,
   String                    $dir     = $slurm::params::builddir,
   Array                     $defines = [],
-)
-{
-  include ::slurm::params
+) {
+  include slurm::params
 
   # $name is provided at define invocation
   $version = $name ? {
@@ -74,17 +73,17 @@ define slurm::pmix::build(
   $buildname = $ensure ? {
     'absent'  => "uninstall-pmix-${version}",
     default   => "build-pmix-${version}",
-    }
+  }
 
   case $facts['os']['family'] {
     'Redhat': {
-      include ::epel
-      include ::yum
+      include epel
+      include yum
       if !defined(Yum::Group[$slurm::params::groupinstall]) {
         yum::group { $slurm::params::groupinstall:
           ensure  => 'present',
           timeout => 600,
-          require => Class['::epel'],
+          require => Class['epel'],
         }
       }
       if !defined(Package['libevent-devel']) {
@@ -135,5 +134,4 @@ define slurm::pmix::build(
     onlyif  => $check_onlyif,
     unless  => $check_unless,
   }
-
 }

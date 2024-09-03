@@ -51,7 +51,7 @@
 #        pkgdir => "/root/rpmbuild/',
 #     }
 #
-define slurm::install::packages(
+define slurm::install::packages (
   Enum['present', 'absent'] $ensure    = $slurm::params::ensure,
   String                    $pkgdir    = $slurm::params::builddir,
   Boolean                   $slurmd    = $slurm::params::with_slurmd,
@@ -59,9 +59,8 @@ define slurm::install::packages(
   Boolean                   $slurmdbd  = $slurm::params::with_slurmdbd,
   Optional[Array]           $wrappers  = [],
   Optional[Array]           $packages  = []
-)
-{
-  include ::slurm::params
+) {
+  include slurm::params
 
   # $name is provided at define invocation
   $version = $name ? {
@@ -70,8 +69,7 @@ define slurm::install::packages(
     default              => fail("\$name must contain only digits, periods, and dashes")
   }
 
-  if !($slurmd or $slurmctld or $slurmdbd or defined(Class['slurm::login']) or !empty($packages))
-  {
+  if !($slurmd or $slurmctld or $slurmdbd or defined(Class['slurm::login']) or !empty($packages)) {
     fail(
       "Module ${module_name} expects a non-empty list of [built] packages to install " +
       'OR specification of which daemon to install (i.e slurm{d,ctld,dbd}) or ' +
@@ -107,28 +105,28 @@ define slurm::install::packages(
     #    - slurm-slurmdbd
     ################
     $default_packages = ($slurmdbd ? {
-      # Slurm DB
-      true    => ($slurmctld ? {
-        true    => ($slurmd ? {
-          true    => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmctld + slurmd
-          default => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $wrappers),               # slurmDB + slurmctld
+        # Slurm DB
+        true    => ($slurmctld ? {
+            true    => ($slurmd ? {
+                true    => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmctld + slurmd
+                default => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $wrappers),               # slurmDB + slurmctld
+            }),
+            default => ($slurmd ? {
+                true    => concat($common_rpms, $slurmdbd_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmd
+                default => concat($common_rpms, $slurmdbd_rpms, $wrappers),               # slurmDB
+            }),
         }),
-        default => ($slurmd ? {
-          true    => concat($common_rpms, $slurmdbd_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmd
-          default => concat($common_rpms, $slurmdbd_rpms, $wrappers),               # slurmDB
+        # NO Slurm DB
+        default => ($slurmctld ? {
+            true    => ($slurmd ? {
+                true    => concat($common_rpms, $slurmctld_rpms, $slurmd_rpms, $wrappers) , # slurmctld + slurmd
+                default => concat($common_rpms, $slurmctld_rpms, $wrappers),                # slurmctld
+            }),
+            default => ($slurmd ? {
+                true    => concat($common_rpms, $slurmd_rpms, $wrappers) ,    # slurmd
+                default => concat($common_rpms, $wrappers),                   # None of the daemons are requested -
+            }),
         }),
-        }),
-      # NO Slurm DB
-      default => ($slurmctld ? {
-        true    => ($slurmd ? {
-          true    => concat($common_rpms, $slurmctld_rpms, $slurmd_rpms, $wrappers) , # slurmctld + slurmd
-          default => concat($common_rpms, $slurmctld_rpms, $wrappers),                # slurmctld
-        }),
-        default => ($slurmd ? {
-          true    => concat($common_rpms, $slurmd_rpms, $wrappers) ,    # slurmd
-          default => concat($common_rpms, $wrappers),                   # None of the daemons are requested -
-        }),
-      }),
     })
   }
   else {
@@ -145,8 +143,8 @@ define slurm::install::packages(
 
   case $facts['os']['family'] {
     'Redhat': {
-      include ::epel
-      include ::yum
+      include epel
+      include yum
       if $slurm::do_build {
         $rpms   = suffix($pkgs, '*.rpm')
         $cwddir = "${pkgdir}/RPMS/${facts['os']['architecture']}"
@@ -171,7 +169,7 @@ define slurm::install::packages(
             if $slurm::do_build {
               Package[$pkg] {
                 provider        => 'rpm',
-                install_options => [ '--nodeps' ],
+                install_options => ['--nodeps'],
                 source          => "${cwddir}/${pkg}-${version}*.rpm",
               }
             }

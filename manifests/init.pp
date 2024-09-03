@@ -192,22 +192,22 @@
 #           Hash defining the partitions and QOS settings for SLURM.
 #           Format
 #           { '<name>' => {
-  #              nodes         => n,           # Number of nodes
-  #              default       => true|false,  # Default partition?
-  #              hidden        => true|false,  # Hidden partition?
-  #              allowgroups   => 'ALL|group[,group]*'
-  #              allowaccounts => 'ALL|acct[,acct]*'
-  #              allowqos      => 'ALL|qos[,qos]*'
-  #              state         => 'UP|DOWN|DRAIN|INACTIVE'
-  #              oversubscribe => 'EXCLUSIVE|FORCE|YES|NO' (replace :shared)
-  #              #=== Time: Format is minutes, minutes:seconds, hours:minutes:seconds, days-hours,
-  #                      days-hours:minutes, days-hours:minutes:seconds or "UNLIMITED"
-  #              default_time  => 'UNLIMITED|DD-HH:MM:SS',
-  #              max_time      => 'UNLIMITED|DD-HH:MM:SS',
-  #              #=== associated QoS config, named 'qos-<partition>' ===
-  #              priority      => n           # QoS priority (default: 0)
-  #              preempt       => 'qos-<name>
-  #         }
+#              nodes         => n,           # Number of nodes
+#              default       => true|false,  # Default partition?
+#              hidden        => true|false,  # Hidden partition?
+#              allowgroups   => 'ALL|group[,group]*'
+#              allowaccounts => 'ALL|acct[,acct]*'
+#              allowqos      => 'ALL|qos[,qos]*'
+#              state         => 'UP|DOWN|DRAIN|INACTIVE'
+#              oversubscribe => 'EXCLUSIVE|FORCE|YES|NO' (replace :shared)
+#              #=== Time: Format is minutes, minutes:seconds, hours:minutes:seconds, days-hours,
+#                      days-hours:minutes, days-hours:minutes:seconds or "UNLIMITED"
+#              default_time  => 'UNLIMITED|DD-HH:MM:SS',
+#              max_time      => 'UNLIMITED|DD-HH:MM:SS',
+#              #=== associated QoS config, named 'qos-<partition>' ===
+#              priority      => n           # QoS priority (default: 0)
+#              preempt       => 'qos-<name>
+#         }
 # @param preemptmode              [Array]       Default: [ 'REQUEUE' ]
 #           in ['OFF','CANCEL','CHECKPOINT','GANG','REQUEUE','SUSPEND']
 # @param preempttype              [String]      Default: 'qos'
@@ -328,17 +328,17 @@
 #          Hash defining the hierarchical network topology iff $topology == 'tree'
 #          Format
 #          'switchname' => {
-  #              [comment => 'This will become a comment above the line',]
-  #              nodes => '<nodes>',
-  #              [linkspeed => '<speed>']
-  #        }
+#              [comment => 'This will become a comment above the line',]
+#              nodes => '<nodes>',
+#              [linkspeed => '<speed>']
+#        }
 #        Example
 #        { 's0' => { nodes => 'dev[0-5]'   },
 #          's1' => { nodes => 'dev-[6-11]' },
 #          's2' => { nodes => 'dev-[12-17]'},
 #          's3' => { comment   => 'GUID: XXXXXX - switch 0',
-  #                  switches  => 's[0-2]',
-  #                  linkspeed => '100Mb/s',} }
+#                  switches  => 's[0-2]',
+#                  linkspeed => '100Mb/s',} }
 #       Which will produce the following entries in the topology.conf file
 #           SwitchName=s0 Nodes=dev[0-5]
 #           SwitchName=s1 Nodes=dev-[6-11]
@@ -489,8 +489,8 @@
 # for instance
 #
 #         class { 'slurm':
-  #             ensure => 'present'
-  #         }
+#             ensure => 'present'
+#         }
 #
 # === Authors
 #
@@ -508,7 +508,7 @@
 #
 # [Remember: No empty lines between comments and class definition]
 #
-class slurm(
+class slurm (
   Enum['present', 'absent'] $ensure       = $slurm::params::ensure,
   $content                                = undef,
   $custom_content                         = undef,
@@ -667,6 +667,7 @@ class slurm(
   Integer $slurmdtimeout                  = $slurm::params::slurmdtimeout,
   Array   $slurmctldparameters            = $slurm::params::slurmctldparameters,
   Array   $slurmdparameters               = $slurm::params::slurmdparameters,
+  String  $slurmdspooldir                 = $slurm::params::slurmdspooldir,
   String  $srunportrange                  = $slurm::params::srunportrange,
   String  $srunepilog                     = $slurm::params::srunepilog,
   String  $srunprolog                     = $slurm::params::srunprolog,
@@ -769,13 +770,12 @@ class slurm(
   $pluginsdir_target                      = undef,
   Array $plugins                          = [],
 )
-inherits slurm::params
-{
+inherits slurm::params {
   info ("Configuring SLURM (with ensure = ${ensure})")
 
   case $facts['os']['family'] {
     #'Debian': { contain ::slurm::common::debian }
-    'RedHat':  { contain ::slurm::common::redhat }
+    'RedHat':  { contain slurm::common::redhat }
     default: {
       fail("Module ${module_name} is not supported on ${facts['os']['name']}")
     }
