@@ -277,6 +277,7 @@ class slurm::params {
   $slurmdtimeout           = 300
   $slurmctldparameters     = []
   $slurmdparameters        = []
+  $slurmdspooldir          = ''
   $srunportrange           = '50000-53000'
   $srunepilog              = ''
   $srunprolog              = ''

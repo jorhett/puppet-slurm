@@ -667,6 +667,7 @@ class slurm (
   Integer $slurmdtimeout                  = $slurm::params::slurmdtimeout,
   Array   $slurmctldparameters            = $slurm::params::slurmctldparameters,
   Array   $slurmdparameters               = $slurm::params::slurmdparameters,
+  String  $slurmdspooldir                 = $slurm::params::slurmdspooldir,
   String  $srunportrange                  = $slurm::params::srunportrange,
   String  $srunepilog                     = $slurm::params::srunepilog,
   String  $srunprolog                     = $slurm::params::srunprolog,
